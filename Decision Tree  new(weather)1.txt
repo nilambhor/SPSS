@@ -1,0 +1,36 @@
+wea=read.csv("C:\\Users\\Sneha\\Documents\\Python Akshay sir\\Dataset Akshay Sir\\weather.csv")
+View(wea)
+
+str(wea)
+library(tree)
+library(dplyr)
+glimpse(wea)
+
+wea$RainTomorrow=as.factor(wea$RainTomorrow)
+#spliting
+#You can also use caret library for spliting.
+set.seed(3)
+s = sample(nrow(wea),0.8*nrow(wea))
+train = wea[s,]
+test = wea[-s,] 
+
+model = tree(RainTomorrow~.,data=train)
+summary(model)
+
+plot(model)
+text(model,cex= 0.6)
+
+pred<-predict(model, test, type='class')
+View(pred)
+
+#cross validate(To prune/cut the tree)
+set.seed(3)
+cv_tree = cv.tree(model,FUN = prune.misclass)
+plot(cv_tree$size,cv_tree$dev ,type="b")
+cv_tree1 = prune.misclass(model,best=12)
+
+plot(cv_tree1)
+text(cv_tree1,pretty = 0,cex= 0.6)
+
+
+

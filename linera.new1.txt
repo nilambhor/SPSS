@@ -1,0 +1,77 @@
+#Columns - age: age of primary beneficiary
+#sex: insurance contractor gender, female, male
+#bmi: Body mass index, providing an understanding of body, weights that are relatively high or low relative to height, objective index of body weight (kg / m ^ 2) using the ratio of height to weight, ideally 18.5 to 24.9
+#children: Number of children covered by health insurance / Number of dependents
+#smoker: Smoking
+#region: the beneficiary's residential area in the US, northeast, southeast, southwest, northwest.
+#charges: Individual medical costs billed by health insurance
+#can you accurately predict insurance costs?
+
+
+setwd("C:\\Users\\Sneha\\Documents\\Python Akshay sir\\Dataset Akshay Sir")
+library(dplyr)
+Insurance=read.csv("C:\\Users\\Sneha\\Documents\\Python Akshay sir\\Dataset Akshay Sir\\insurance.csv")
+
+head(Insurance)
+
+str(Insurance)
+
+glimpse(Insurance)
+
+#to check missing values(NA)
+apply(Insurance,2,function(x) sum(is.na(x)))
+
+table(Insurance$sex)
+
+Insurance$sex=as.factor(Insurance$sex)
+
+table(Insurance$smoker)
+Insurance$smoker=as.factor(Insurance$smoker)
+
+table(Insurance$region)
+Insurance$region=as.factor(Insurance$region)
+
+
+#spliting
+s=sample(1:nrow(Insurance),0.80*nrow(Insurance))
+train=Insurance[s,]
+test=Insurance[-s,]
+
+#Build the model
+model<-lm(charges ~ .,data=train)
+# To find residuals/error
+library(psych)
+describe(model$residuals)
+
+#Summarize the model
+sury=summary(model)
+sury$r.squared
+
+
+train_res=cbind.data.frame(Actual = train$charges,Fitted = fitted(model),
+                           Error=residuals(model))
+min(train_res$Error)
+max(train_res$Error)
+
+#RMSE
+rmse_train = sqrt(mean(train_res$Error^2))
+rmse_train
+
+
+library(ggplot2)
+ggplot(train_res,aes(Error))+geom_histogram()
+
+ggplot(model, aes(x = bmi, y = age)) +
+  geom_point() +
+  stat_smooth()
+
+
+#pred<-predict(model, test)
+#View(pred)
+
+
+
+
+
+
+

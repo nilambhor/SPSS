@@ -1,0 +1,47 @@
+setwd("C:\\nilam\\Machine-Learning-techniques-in-python-master\\master")
+
+sales=read.csv("C:\\nilam\\Machine-Learning-techniques-in-python-master\\master\\Social_Network_Ads.csv")
+
+str(sales)
+
+library(dplyr)
+
+glimpse(sales)
+
+table(sales$Gender)
+
+sales$Gender=as.factor(sales$Gender)
+
+# To check null values
+apply(sales,2,function(x) sum(is.na(x)))
+
+#spliting
+s=sample(1:nrow(sales),0.80*nrow(sales))
+train=sales[s,]
+test=sales[-s,]
+
+model<-glm(Purchased ~ ., family = 'binomial',data=train)
+summary(model)
+
+pred<-predict(model, test)
+View(pred)
+
+#
+
+fitted.results1 = predict(model, newdata=train, type='response')
+View(fitted.results1)
+
+fitted.results1 = ifelse(fitted.results1 >=0.5,1,0)
+View(fitted.results1)
+
+sales1 = table(predicted = fitted.results1, actual = train$Purchased)
+sales1
+
+TN = sales1[1,1] # True Negative - Actual & Predicted is 0/N
+TP = sales1[2,2] # True Positive - Actual & Predicted is 1/Y
+FP = sales1[2,1] # False Positive - Actual is 0/N but Predicted is 1/Y
+FN = sales1[1,2] # False Nefgative - Actual is 1/Y but Predicted is 0/N
+TO = TN+TP+FP+FN # Total Observations
+
+accuracy = (TP+TN)/TO # Accuracy or Prevalance of Confusion Matrix
+accuracy

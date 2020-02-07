@@ -1,0 +1,31 @@
+d<-read.csv('C:\\Users\\User26\\Downloads\\Main.csv')
+View(d)
+
+
+colnames(d)
+
+library(caret)
+
+d<-d[,c(6,7,17,19)]
+View(d)
+
+colnames(d)
+str(d)
+
+
+library(dplyr)
+d<-d%>%
+  mutate(Tar=ifelse(Target=="Yes",1,0))%>%
+  
+  select(-Target)
+View(d)
+
+d$NAME_INCOME_TYPE<-factor(d$NAME_INCOME_TYPE)
+d$OCCUPATION_TYPE<-factor(d$OCCUPATION_TYPE)
+
+model<-glm(Tar ~ ., family = 'binomial',data=train)
+summary(model)
+
+
+pred<-predict(model, test)
+View(pred)
