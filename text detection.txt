@@ -1,0 +1,40 @@
+install.packages("tesseract")
+
+
+library(tesseract)
+text <- ocr("http://jeroen.github.io/images/testocr.png")
+cat(text)
+
+
+results <- tesseract::ocr_data("http://jeroen.github.io/images/testocr.png")
+results
+
+
+library(magick)
+
+input <- image_read("C:/Users/User26/Desktop/Akshay/IMG_20190725_162510.jpg")
+plot(input)
+
+text <- input %>%
+  image_resize("2000x") %>%
+  image_convert(type = 'Grayscale') %>%
+  image_trim(fuzz = 40) %>%
+  image_write(format = 'png', density = '300x300') %>%
+  tesseract::ocr() 
+
+cat(text)
+
+
+
+input <- image_read("C:/Users/User26/Desktop/Akshay/IMG_20190725_162510.jpg")
+plot(input)
+
+text <- input %>%
+  image_resize("2000x") %>%
+  image_convert(type = 'Grayscale') 
+plot(text)
+
+
+
+
+  
